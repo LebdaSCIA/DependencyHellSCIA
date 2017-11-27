@@ -1,0 +1,15 @@
+Selected <span class="label label-warning">{{model?.name}}</span>
+<span class="label label-danger">Dependency</span>
+<table class="table table-sm table-bordered table-striped">
+        <tr>
+            <th>ID dependent</th>
+            <th>Name</th>
+            <th>Category</th>
+        </tr>
+        <tr *ngFor="let item of model?.dllDependency?.dependency">
+            <td style="vertical-align:middle">{{item}}</td>
+            <td style="vertical-align:middle">TODO</td>
+            <td style="vertical-align:middle">TODO</td>
+        </tr>
+    
+    </table>

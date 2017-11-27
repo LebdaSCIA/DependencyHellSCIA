@@ -2,17 +2,32 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-
+import { ModelModule } from "./model/model.module";
+import { CoreModule } from "./core/core.module";
+import { RouterModule } from "@angular/router";
+import { TableComponent } from './core/table.component';
+import { GrafComponent } from './core/graf.component';
+import { TableDetComponent } from './core/tableDet.component';
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    ModelModule,
+    CoreModule,
+    RouterModule.forRoot([
+      { path: "table", component: TableComponent,
+      children: [ 
+        { path: "det/:id", component: TableDetComponent }, 
+        { path: "**", redirectTo: "/table" } 
+        ]  },
+      { path: "graf", component: GrafComponent },
+      { path: "**", redirectTo: "/table" }
+    ])],
+  declarations: [
+    AppComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

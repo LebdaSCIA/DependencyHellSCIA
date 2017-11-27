@@ -1,0 +1,33 @@
+<table class="table table-sm table-bordered table-striped">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Dependency</th>
+        <th>#</th>
+    </tr>
+    <tr *ngFor="let item of getSciaDlls()">
+        <td style="vertical-align:middle">{{item.id}}</td>
+        <td style="vertical-align:middle">{{item.name}}</td>
+        <td style="vertical-align:middle">{{item.category}}</td>
+        <td style="vertical-align:middle">
+            <div *ngFor="let itemDep of item.dllDependency?.dependency">
+                {{itemDep}}
+            </div>
+        </td>
+        <td class="text-xs-center">
+            <button class="btn btn-warning btn-sm" (click)="selectSciaDll(item.id)">
+                Select
+            </button>
+        </td>
+    </tr>
+
+</table>
+
+<router-outlet></router-outlet>
+<!-- <button class="btn btn-primary" (click)="createProduct()">
+    Create New Product
+</button>
+<button class="btn btn-danger" (click)="deleteProduct(-1)">
+    Generate HTTP Error
+</button> -->

@@ -8,7 +8,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "json": "json-server --p 3500 restData.js"   
   },
   "private": true,
   "dependencies": {
@@ -23,7 +24,9 @@
     "core-js": "^2.4.1",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4",
-    "bootstrap": "4.0.0-alpha.4"
+    "bootstrap": "4.0.0-alpha.4", 
+    "font-awesome": "4.7.0",
+    "ng2-nvd3": "2.0.0" 
   },
   "devDependencies": {
     "@angular/cli": "1.0.0",
@@ -42,6 +45,8 @@
     "protractor": "~5.1.0",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.2.0"
+    "typescript": "~2.2.0",
+    "json-server": "0.8.21", 
+    "jsonwebtoken": "7.1.9" 
   }
 }
