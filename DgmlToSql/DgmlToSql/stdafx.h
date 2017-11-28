@@ -10,6 +10,13 @@
 #include <stdio.h>
 #include <tchar.h>
 
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <codecvt>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <map>
 
-
-// TODO: reference additional headers your program requires here
+using namespace std;
