@@ -2,61 +2,11 @@
 //
 
 #include "stdafx.h"
-#include <iostream>
-#include <string>
-#include <chrono>
-#include <codecvt>
-#include <vector>
-#include <fstream>
-
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
-#include <algorithm>
-#include <map>
-
-using namespace std;
-
-
-enum class eCategory
-{
-	eUnknown = 1,
-	eKernel,
-	eDataModel,
-	eChecks,
-	eGUI,
-	eUT,
-	eCommands,
-	eNexis
-};
-
-struct project
-{
-	int id = 0;
-	int LoC = 0;
-	eCategory category = eCategory::eUnknown;
-	wstring name;
-	wstring path;
-	wstring comment;
-};
-
-struct link
-{
-	int id = 0;
-	short target = 0;
-	short source = 0;
-	bool isTransient = false;
-};
-
-struct linked_id_with_flag
-{
-	linked_id_with_flag(short id, bool b) : linked_id(id), transient(b) {}
-	short linked_id = 0;
-	bool transient = false;
-};
-
-using vecLinkswF = vector<linked_id_with_flag>;
-using mapTargetToLinkswF = map<short, vecLinkswF>;
+#include "Commons.h"
+#include "ReduceDependencies.h"
 
 // static wstring GetWideString(string str)
 // {
@@ -200,92 +150,6 @@ int GetLoC(const project& oneDLL)
 	return LoC;
 }
 
-vecLinkswF GetDependenciesForTarget(short target, const vector<link>& links)
-{
-	vecLinkswF flags;
-	flags.reserve(200U);
-	for (const auto& one : links)
-	{
-		if (one.target == target)
-		{
-			flags.push_back(linked_id_with_flag{ one.source, false });
-		}
-	}
-	flags.shrink_to_fit();
-	return flags;
-}
-
-mapTargetToLinkswF GetMapTargetToLinks(const vector<link>& links)
-{
-	mapTargetToLinkswF mapTargets;
-	for (const auto& one : links)
-	{
-		if (mapTargets.find(one.target) == mapTargets.cend())
-		{
-			mapTargets[one.target] = GetDependenciesForTarget(one.target, links);
-			cout << one.target << "; dep = " << mapTargets[one.target].size() << "\r\n";
-		}
-	}
-	return mapTargets;
-}
-
-vecLinkswF FilterDepFlags(short id, vecLinkswF v)
-{
-	v.erase(remove_if(v.begin(), v.end(), [id](const linked_id_with_flag& i) { return i.linked_id == id; }), v.end());
-	return v;
-};
-
-bool IsLinkedId(short id, const vecLinkswF& dependLinksActualLevel, const mapTargetToLinkswF& mapTargets)
-{
-	for (auto& i : dependLinksActualLevel)
-	{
-		if (i.linked_id == id)
-		{
-			return true;
-		}
-	}
-	for (const auto& oneLink : dependLinksActualLevel)
-	{
-		auto itf2 = mapTargets.find(oneLink.linked_id);
-		if (itf2 != mapTargets.cend())
-		{
-			if (IsLinkedId(id, itf2->second, mapTargets))
-			{
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-// example:
-// 19 - EP_Environment
-// 20 - RootAppBase
-// link: dllSourceID = 19, dllTargetID = 20
-// meaning is: 'target' is dependent on 'source'
-void ModifyDependenciesWithFlags(vector<link>& links)
-{
-	mapTargetToLinkswF mapTargets = GetMapTargetToLinks(links);
-	for (auto& one : mapTargets)
-	{
-		short targetId = one.first;
-		cout << targetId << " - start\r\n";
-		auto& vecLinkswFlags = one.second;
-		for (auto& oneLinkwFlag : vecLinkswFlags)
-		{
-			if (IsLinkedId(oneLinkwFlag.linked_id, FilterDepFlags(oneLinkwFlag.linked_id, vecLinkswFlags), mapTargets))
-			{
-				oneLinkwFlag.transient = true;
-				auto itf = find_if(links.begin(), links.end(), [=](link& ln) { return ln.target == targetId && ln.source == oneLinkwFlag.linked_id; });
-				if (itf != links.cend())
-				{
-					itf->isTransient = true;
-				}
-			}
-		}
-	}
-}
-
 vector<project> ReadDlls(wfstream& instream)
 {
 	auto startTime = chrono::steady_clock::now();
@@ -407,7 +271,9 @@ int main(int argc, char *argv[], char *envp[])
 
 	auto projects = ReadDlls(instream);
 	auto links = ReadLinks(instream);
-	//ModifyDependenciesWithFlags(links);
+
+// 	CReduceDependencies reduce;
+// 	reduce.ModifyDependenciesWithFlags(links);
 
 	WriteOutputSciaDlls("c:\\Deve\\SCIADllInfo.txt", projects);
 	WriteOutputLinks("c:\\Deve\\SCIADllLinks.txt", links);
