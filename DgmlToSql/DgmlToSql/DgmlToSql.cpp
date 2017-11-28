@@ -322,10 +322,10 @@ vector<project> ReadDlls(wfstream& instream)
 		}
 	}
 
-	cout << "Count of projects in 'dgml' file: " << projects.size() << "\r\n";
 	chrono::duration<double> diff = chrono::steady_clock::now() - startTime;
 	double seconds = diff.count();
-	cout << "Finished reading Dlls (seconds): " << seconds << "\r\n";
+	cout << "\nFinished reading Dlls (seconds): " << seconds << "\r\n";
+	cout << "Count of projects in 'dgml' file: " << projects.size() << "\r\n";
 
 	return projects;
 }
@@ -350,17 +350,17 @@ vector<link> ReadLinks(wfstream& instream)
 		}
 	}
 
-	cout << "Count of links in 'dgml' file: " << links.size() << "\r\n";
 	chrono::duration<double> diff = chrono::steady_clock::now() - startTime;
 	double seconds = diff.count();
-	cout << "Finished reading links (seconds): " << seconds << "\r\n";
+	cout << "\nFinished reading links (seconds): " << seconds << "\r\n";
+	cout << "Count of links in 'dgml' file: " << links.size() << "\r\n";
 
 	return links;
 }
 
-void WriteOutputSciaDlls(const vector<project>& projects)
+void WriteOutputSciaDlls(const string& fileName, const vector<project>& projects)
 {
-	wfstream outstream1("c:\\Deve\\SCIADll.txt", ios::out | ios::binary);
+	wfstream outstream1(fileName, ios::out | ios::binary);
 	outstream1 << "INSERT dbo.SCIADLL(ID, Name, Path, Category, Status, Comment, LoC) VALUES\r\n";
 	for (const auto& p : projects)
 	{
@@ -369,13 +369,13 @@ void WriteOutputSciaDlls(const vector<project>& projects)
 	}
 	outstream1 << "GO\r\n";
 	outstream1.close();
-	cout << "Finished DLL List." << "\r\n";
+	cout << "\n Saving list of all Dlls into a file: " << fileName << "\r\n";
 }
 
-void WriteOutputLinks(const vector<link>& links)
+void WriteOutputLinks(const string& fileName, const vector<link>& links)
 {
 	wstring dependHeader = L"INSERT dbo.DllDependency (ID, dllSourceID, dllTargetID) VALUES\r\n";
-	wfstream outstream2("c:\\Deve\\DLLlinks.txt", ios::out | ios::binary);
+	wfstream outstream2(fileName, ios::out | ios::binary);
 	outstream2 << dependHeader;
 	int counter = 1;
 	for (const auto& s : links)
@@ -394,7 +394,7 @@ void WriteOutputLinks(const vector<link>& links)
 	}
 	outstream2 << L"GO\r\n";
 	outstream2.close();
-	cout << "Finished DLL links" << "\r\n";
+	cout << "\n Saving all links between Dlls into a file: " << fileName << "\r\n";
 }
 
 int main(int argc, char *argv[], char *envp[])
@@ -405,12 +405,13 @@ int main(int argc, char *argv[], char *envp[])
 	auto fileName = string(argv[1]);
 	wfstream instream(fileName, ios::in | ios::binary);
 
-	vector<project> projects = ReadDlls(instream);
-	vector<link> links = ReadLinks(instream);
+	auto projects = ReadDlls(instream);
+	auto links = ReadLinks(instream);
 	//ModifyDependenciesWithFlags(links);
 
-	WriteOutputSciaDlls(projects);
-	WriteOutputLinks(links);
+	WriteOutputSciaDlls("c:\\Deve\\SCIADllInfo.txt", projects);
+	WriteOutputLinks("c:\\Deve\\SCIADllLinks.txt", links);
 
+	cout << endl;
 	return 0;
 }
