@@ -5,6 +5,7 @@ import { MODES, SharedState, SHARED_STATE } from "./sharedState.model";
 import { Observer } from "rxjs/Observer";
 import { Router } from "@angular/router";
 import { DllCategory, DllStatus } from "../model/shared.model";
+import { AppSetting } from "./app.setting.service";
 
 export class CategorySet {
     constructor(
@@ -14,13 +15,23 @@ export class CategorySet {
     }
 }
 
+export class Setting {
+    catset = new Array<CategorySet>();
+    constructor() {  
+        this.catset.push(new CategorySet (false, "Checks", DllCategory.Checks));
+        this.catset.push(new CategorySet (false, "DataModel", DllCategory.DataModel));
+        this.catset.push(new CategorySet (false, "GUI", DllCategory.GUI));
+        this.catset.push(new CategorySet (false, "Kernel", DllCategory.Kernel));
+        this.catset.push(new CategorySet (false, "Storage", DllCategory.Storage));
+        this.catset.push(new CategorySet (false, "UT", DllCategory.UT));    
+    }
+}
+
 @Component({
     selector: 'app-set',
     templateUrl: "setting.component.html"
 })
 export class SettingComponent {
-    catset = new Array<CategorySet>();
-
     // dllCat = DllCategory;
     // categories() : Array<string> {
     //     var keys = Object.keys(this.dllCat);
@@ -32,14 +43,8 @@ export class SettingComponent {
     //     return keys.slice(keys.length / 2);
     // }
     constructor(
-        private router: Router,
-        private modelRepo: ModelRepository,
+        public appSetting: AppSetting,
         @Inject(SHARED_STATE) private observer: Observer<SharedState>) {
-        this.catset.push(new CategorySet (false, "Checks", DllCategory.Checks));
-        this.catset.push(new CategorySet (false, "DataModel", DllCategory.DataModel));
-        this.catset.push(new CategorySet (false, "GUI", DllCategory.GUI));
-        this.catset.push(new CategorySet (false, "Kernel", DllCategory.Kernel));
-        this.catset.push(new CategorySet (false, "Storage", DllCategory.Storage));
-        this.catset.push(new CategorySet (false, "UT", DllCategory.UT));
+            appSetting.addCallBack4OnSet(() => observer.next(new SharedState(MODES.APP_SETING, -1)));
     }
 }

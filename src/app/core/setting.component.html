@@ -1,8 +1,8 @@
 <div>
     <span class="badge badge-primary">Category:</span>
-    <div *ngFor="let item of catset" class="form-check form-check-inline">
+    <div *ngFor="let item of appSetting.catset" class="form-check form-check-inline">
         <label class="form-check-label">
-            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1"> {{ item.name }}
+            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" [(ngModel)]="item.on" value="option1"> {{ item.name }}
         </label>
     </div>
 </div>
