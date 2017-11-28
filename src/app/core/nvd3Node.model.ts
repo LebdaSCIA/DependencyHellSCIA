@@ -4,7 +4,7 @@ export class Nvd3Node {
     name : string;
     group : number;
     constructor(dll : SciaDll) {
-        this.name = dll.name;
+        this.name = dll.Name;
         this.group = 1;
      }
 }
