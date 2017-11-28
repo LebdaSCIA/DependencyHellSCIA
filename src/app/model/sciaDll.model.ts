@@ -12,7 +12,7 @@ export class SciaDll {
 
         static Factory() : SciaDll
         {
-            let retVal = new SciaDll(-1, "new.dll", DllCategory.Kernel, DllStatus.ok, 0, "no coment");
+            let retVal = new SciaDll(-1, "new.dll", DllCategory.Kernel, DllStatus.ok, "", "no coment");
             return retVal;
         }
 }
