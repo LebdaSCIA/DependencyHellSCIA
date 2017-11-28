@@ -8,7 +8,7 @@ import { RestDataSource, REST_URL, REST_URL_DEP } from "./rest.datasource";
     imports: [HttpModule, JsonpModule],
     providers: [ModelRepository,
         { provide: IModelDataSource, useClass: RestDataSource },
-        { provide: REST_URL, useValue: `http://${location.hostname}:3500/sciaDlls` },
+        { provide: REST_URL, useValue: `http://portal.scia.cz/portalws/dependencyhell/api/SCIADLLs` },
         { provide: REST_URL_DEP, useValue: `http://${location.hostname}:3500/sciaDllDeps` }]
 })
 export class ModelModule { }
