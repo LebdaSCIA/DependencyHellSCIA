@@ -3,11 +3,12 @@ import { DllDependency } from "./dllDependency.model";
 
 export class SciaDll {
     constructor(
-        public id: number,
-        public name: string,
-        public category : DllCategory,
-        public status : DllStatus,
-        public coment?: string) { }
+        public ID: number,
+        public Name: string,
+        public Category : DllCategory,
+        public Status: DllStatus,
+        public Path: string,
+        public Comment?: string) { }
 
         static Factory() : SciaDll
         {
