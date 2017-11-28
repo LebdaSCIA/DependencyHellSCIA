@@ -16,6 +16,10 @@ export class ModelRepository {
         return this.dataSource.getData();
     }
 
+    getSciaDllsPromise(callBack: (dll : SciaDll[]) => void): void {
+        this.dataSource.getData().subscribe(data => callBack(data));
+    }
+
     getSciaDllPromise(id: number, callBack: (dll : SciaDll) => void): void {
         this.dataSource.getData().subscribe(data => callBack(data.find(p =>p.id == id)));
     }
