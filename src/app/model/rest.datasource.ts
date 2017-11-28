@@ -47,13 +47,15 @@ export class RestDataSource implements IModelDataSource {
 
         let headers = new Headers();
         headers.set("Access-Key", "<secret>");
-        headers.set("Application-Names", ["exampleApp", "proAngular"]);
+      //headers.set("Access-Key", "<secret>");
+        //headers.set("Application-Names", ["exampleApp", "proAngular"]);
 
         return this.http.request(new Request({
             method: verb,
             url: url,
-            body: body,
-            headers: headers
+            body: body
+          //,
+          //  headers: headers
         }))
 
             .map(function (response) {
