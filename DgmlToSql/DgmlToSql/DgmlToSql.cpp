@@ -13,6 +13,7 @@
 #include <tchar.h>
 #include <stdio.h>
 #include <algorithm>
+#include <map>
 
 using namespace std;
 
@@ -42,9 +43,20 @@ struct project
 struct link
 {
 	int id = 0;
-	int target = 0;
-	int source = 0;
+	short target = 0;
+	short source = 0;
+	bool isTransient = false;
 };
+
+struct linked_id_with_flag
+{
+	linked_id_with_flag(short id, bool b) : linked_id(id), transient(b) {}
+	short linked_id = 0;
+	bool transient = false;
+};
+
+using vecLinkswF = vector<linked_id_with_flag>;
+using mapTargetToLinkswF = map<short, vecLinkswF>;
 
 // static wstring GetWideString(string str)
 // {
@@ -124,6 +136,10 @@ eCategory GetCategory(const project& oneDLL)
 	{
 		return eCategory::eUT;
 	}
+	if (oneDLL.name.find(L"Test") != string::npos)
+	{
+		return eCategory::eUT;
+	}
 	if (oneDLL.path.find(L"\\Lat") != string::npos)
 	{
 		return eCategory::eKernel;
@@ -153,7 +169,7 @@ int GetLoC(const project& oneDLL)
 
 	if ((dir = FindFirstFile((path + L"\\*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
 	{
-		return 0; /* No files found */
+		return 0; // No files found
 	}
 	
 	do {
@@ -184,23 +200,100 @@ int GetLoC(const project& oneDLL)
 	return LoC;
 }
 
-int main(int argc, char *argv[], char *envp[])
+vecLinkswF GetDependenciesForTarget(short target, const vector<link>& links)
 {
-	(envp);
-	if (argc != 2) return 1;
+	vecLinkswF flags;
+	flags.reserve(200U);
+	for (const auto& one : links)
+	{
+		if (one.target == target)
+		{
+			flags.push_back(linked_id_with_flag{ one.source, false });
+		}
+	}
+	flags.shrink_to_fit();
+	return flags;
+}
+
+mapTargetToLinkswF GetMapTargetToLinks(const vector<link>& links)
+{
+	mapTargetToLinkswF mapTargets;
+	for (const auto& one : links)
+	{
+		if (mapTargets.find(one.target) == mapTargets.cend())
+		{
+			mapTargets[one.target] = GetDependenciesForTarget(one.target, links);
+			cout << one.target << "; dep = " << mapTargets[one.target].size() << "\r\n";
+		}
+	}
+	return mapTargets;
+}
+
+vecLinkswF FilterDepFlags(short id, vecLinkswF v)
+{
+	v.erase(remove_if(v.begin(), v.end(), [id](const linked_id_with_flag& i) { return i.linked_id == id; }), v.end());
+	return v;
+};
+
+bool IsLinkedId(short id, const vecLinkswF& dependLinksActualLevel, const mapTargetToLinkswF& mapTargets)
+{
+	for (auto& i : dependLinksActualLevel)
+	{
+		if (i.linked_id == id)
+		{
+			return true;
+		}
+	}
+	for (const auto& oneLink : dependLinksActualLevel)
+	{
+		auto itf2 = mapTargets.find(oneLink.linked_id);
+		if (itf2 != mapTargets.cend())
+		{
+			if (IsLinkedId(id, itf2->second, mapTargets))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+// example:
+// 19 - EP_Environment
+// 20 - RootAppBase
+// link: dllSourceID = 19, dllTargetID = 20
+// meaning is: 'target' is dependent on 'source'
+void ModifyDependenciesWithFlags(vector<link>& links)
+{
+	mapTargetToLinkswF mapTargets = GetMapTargetToLinks(links);
+	for (auto& one : mapTargets)
+	{
+		short targetId = one.first;
+		cout << targetId << " - start\r\n";
+		auto& vecLinkswFlags = one.second;
+		for (auto& oneLinkwFlag : vecLinkswFlags)
+		{
+			if (IsLinkedId(oneLinkwFlag.linked_id, FilterDepFlags(oneLinkwFlag.linked_id, vecLinkswFlags), mapTargets))
+			{
+				oneLinkwFlag.transient = true;
+				auto itf = find_if(links.begin(), links.end(), [=](link& ln) { return ln.target == targetId && ln.source == oneLinkwFlag.linked_id; });
+				if (itf != links.cend())
+				{
+					itf->isTransient = true;
+				}
+			}
+		}
+	}
+}
+
+vector<project> ReadDlls(wfstream& instream)
+{
 	auto startTime = chrono::steady_clock::now();
-	auto fileName = string(argv[1]);
 
 	vector<project> projects;
 	projects.reserve(750U);
-
-	vector<link> links;
-	links.reserve(30000U);
-
-	wfstream instream(fileName, ios::in | ios::binary);
 	wstring line;
 	project oneDLL;
-	link oneLink;
 	while (getline(instream, line))
 	{
 		if (line.find(L"Label") != string::npos)
@@ -228,25 +321,46 @@ int main(int argc, char *argv[], char *envp[])
 			break;
 		}
 	}
+
+	cout << "Count of projects in 'dgml' file: " << projects.size() << "\r\n";
+	chrono::duration<double> diff = chrono::steady_clock::now() - startTime;
+	double seconds = diff.count();
+	cout << "Finished reading Dlls (seconds): " << seconds << "\r\n";
+
+	return projects;
+}
+
+vector<link> ReadLinks(wfstream& instream)
+{
+	auto startTime = chrono::steady_clock::now();
+
+	vector<link> links;
+	links.reserve(30000U);
+	wstring line;
+	link oneLink;
 	while (getline(instream, line))
 	{
 		if (line.find(L"Target") != string::npos)
 		{
-			oneLink.target = GetID(line);
+			oneLink.target = static_cast<short>(GetID(line));
 			getline(instream, line);
-			oneLink.source = GetID(line);
+			oneLink.source = static_cast<short>(GetID(line));
 			++oneLink.id;
 			links.push_back(oneLink);
 		}
 	}
 
-	cout << projects.size() << endl;
-
+	cout << "Count of links in 'dgml' file: " << links.size() << "\r\n";
 	chrono::duration<double> diff = chrono::steady_clock::now() - startTime;
 	double seconds = diff.count();
-	cout << "Finished in " << seconds << endl;
+	cout << "Finished reading links (seconds): " << seconds << "\r\n";
 
-	wfstream outstream1("c:\\Deve\\SCIADll.txt" , ios::out | ios::binary);
+	return links;
+}
+
+void WriteOutputSciaDlls(const vector<project>& projects)
+{
+	wfstream outstream1("c:\\Deve\\SCIADll.txt", ios::out | ios::binary);
 	outstream1 << "INSERT dbo.SCIADLL(ID, Name, Path, Category, Status, Comment, LoC) VALUES\r\n";
 	for (const auto& p : projects)
 	{
@@ -255,8 +369,11 @@ int main(int argc, char *argv[], char *envp[])
 	}
 	outstream1 << "GO\r\n";
 	outstream1.close();
-	cout << "Finished DLL List." << endl;
+	cout << "Finished DLL List." << "\r\n";
+}
 
+void WriteOutputLinks(const vector<link>& links)
+{
 	wstring dependHeader = L"INSERT dbo.DllDependency (ID, dllSourceID, dllTargetID) VALUES\r\n";
 	wfstream outstream2("c:\\Deve\\DLLlinks.txt", ios::out | ios::binary);
 	outstream2 << dependHeader;
@@ -268,7 +385,7 @@ int main(int argc, char *argv[], char *envp[])
 			counter = 1;
 			outstream2 << L"\r\nGO\r\n" << dependHeader;
 		}
-		outstream2 << L" (" << s.id << L", " << s.source << L", " << s.target << ")";
+		outstream2 << L" (" << s.id << L", " << s.source << L", " << s.target << L", " << s.isTransient << L")";
 		++counter;
 		if ((counter % 1000) != 0)
 		{
@@ -277,7 +394,23 @@ int main(int argc, char *argv[], char *envp[])
 	}
 	outstream2 << L"GO\r\n";
 	outstream2.close();
-	cout << "Finished DLL links" << endl;
-	return 0;
+	cout << "Finished DLL links" << "\r\n";
 }
 
+int main(int argc, char *argv[], char *envp[])
+{
+	(envp);
+	if (argc != 2) { return 1; }
+
+	auto fileName = string(argv[1]);
+	wfstream instream(fileName, ios::in | ios::binary);
+
+	vector<project> projects = ReadDlls(instream);
+	vector<link> links = ReadLinks(instream);
+	//ModifyDependenciesWithFlags(links);
+
+	WriteOutputSciaDlls(projects);
+	WriteOutputLinks(links);
+
+	return 0;
+}
