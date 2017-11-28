@@ -1,11 +1,17 @@
-import { DllCategory } from "./shared.model";
-import { DllDependency } from "./dllDpendency.model";
+import { DllCategory, DllStatus } from "./shared.model";
+import { DllDependency } from "./dllDependency.model";
 
 export class SciaDll {
     constructor(
         public id: number,
         public name: string,
-        public description: string,
         public category : DllCategory,
-        public dllDependency?: DllDependency) { }
+        public status : DllStatus,
+        public coment?: string) { }
+
+        static Factory() : SciaDll
+        {
+            let retVal = new SciaDll(-1, "new.dll", DllCategory.Kernel, DllStatus.ok, "no coment");
+            return retVal;
+        }
 }

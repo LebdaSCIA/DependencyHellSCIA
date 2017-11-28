@@ -1,10 +1,13 @@
 module.exports = function () {
     var data = {
         sciaDlls: [
-            { id: 1, name: "Child.dll", description: "First child", category: "Data" },
-            { id: 2, name: "Child2.dll", description: "Second child", category: "BussinesLogic" },
-            { id: 3, name: "Parent.dll", description: "Parent", category: "Presentation",
-            dllDependency: {dependency:[ 1, 2 ] } }
+            { id: 0, name: "Child.dll", category: "Kernel", status: "ok", coment: "Node" },
+            { id: 1, name: "Child2.dll", category: "Kernel", status: "ok", coment: "Node" },
+            { id: 2, name: "Parent.dll", category: "Kernel", status: "ok", coment: "Node" }
+        ],
+        sciaDllDeps: [
+            { dllSource: 0, dllTarget: 2 },
+            { dllSource: 1, dllTarget: 2 }
         ]
     }
     return data

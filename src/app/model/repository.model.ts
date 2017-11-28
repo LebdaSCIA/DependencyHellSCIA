@@ -1,27 +1,26 @@
 import { Injectable } from "@angular/core";
 import { SciaDll } from "./sciaDll.model";
+import { DllDependency } from "./dllDependency.model";
 import { Observable } from "rxjs/Observable";
 import { IModelDataSource } from "./datasource.interface.model";
 
 @Injectable()
 export class ModelRepository {
-    private SciaDlls: SciaDll[] = new Array<SciaDll>();
+    private SciaDlls = new Array<SciaDll>();
+    private SciaDllDeps = new Array<DllDependency>();
     private locator = (p: SciaDll, id: number) => p.id == id;
 
     constructor(private dataSource: IModelDataSource) {
-        this.dataSource.getData().subscribe(data => this.SciaDlls = data);
-    }
-
-    getSciaDllsObservable(): Observable<SciaDll[]> {
-        return this.dataSource.getData();
+        this.dataSource.getSciaDlls().subscribe(data => this.SciaDlls = data);
+        this.dataSource.getSciaDllDeps().subscribe(data => this.SciaDllDeps = data);
     }
 
     getSciaDllsPromise(callBack: (dll : SciaDll[]) => void): void {
-        this.dataSource.getData().subscribe(data => callBack(data));
+        this.dataSource.getSciaDlls().subscribe(data => callBack(data));
     }
 
     getSciaDllPromise(id: number, callBack: (dll : SciaDll) => void): void {
-        this.dataSource.getData().subscribe(data => callBack(data.find(p =>p.id == id)));
+        this.dataSource.getSciaDlls().subscribe(data => callBack(data.find(p =>p.id == id)));
     }
 
     getSciaDlls(): SciaDll[] {

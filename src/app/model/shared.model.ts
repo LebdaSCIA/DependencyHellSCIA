@@ -1,6 +1,16 @@
 export enum DllCategory
 {
-    Data,
-    BussinesLogic,
-    Presentation
+    Kernel,
+    DataModel,
+    Storage,
+    Checks,
+    GUI,
+    UT
+}
+
+export enum DllStatus
+{
+    ok,
+    refact,
+    obsolete
 }

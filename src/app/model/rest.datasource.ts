@@ -2,6 +2,7 @@ import { Injectable, Inject, OpaqueToken } from "@angular/core";
 import { Http, Request, RequestMethod, Headers, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import { SciaDll } from "./sciaDll.model";
+import { DllDependency } from "./dllDependency.model";
 import { IModelDataSource } from "./datasource.interface.model";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
@@ -9,15 +10,23 @@ import "rxjs/add/observable/throw";
 import { Subject } from "rxjs/Subject";
 
 export const REST_URL = new OpaqueToken("rest_url");
+export const REST_URL_DEP = new OpaqueToken("rest_url_dep");
 
 @Injectable()
 export class RestDataSource implements IModelDataSource {
 
-    constructor(private http: Http, @Inject(REST_URL) private url: string) { }
+    constructor(
+        private http: Http,
+        @Inject(REST_URL) private url: string,
+        @Inject(REST_URL_DEP) private urlDep: string,
+    ) { }
 
-    getData(): Observable<SciaDll[]> {
-        // return this.http.get(this.url).map(response => response.json());
+    getSciaDlls(): Observable<SciaDll[]> {
         return this.sendRequest(RequestMethod.Get, this.url);
+    }
+
+    getSciaDllDeps(): Observable<DllDependency[]> {
+        return this.sendRequest(RequestMethod.Get, this.urlDep);
     }
 
     // saveSciaDll(SciaDll: SciaDll): Observable<SciaDll> {

@@ -86,23 +86,6 @@ export class GrafComponent implements OnInit {
       ]
     };
     */
-    // this.data = {
-    //   "nodes": [
-    //     { "name": "Myriel", "group": 1 },
-    //     { "name": "Napoleon", "group": 1 },
-    //     { "name": "Mlle.Baptistine", "group": 1 },
-    //     { "name": "Mme.Magloire", "group": 1 },
-    //     { "name": "CountessdeLo", "group": 1 },
-    //     { "name": "Geborand", "group": 1 },
-    //     { "name": "Champtercier", "group": 1 },
-    //     { "name": "Cravatte", "group": 1 },
-    //     { "name": "Count", "group": 1 },
-    //     { "name": "OldMan", "group": 1 },
-    //     { "name": "Labarre", "group": 2 },
-    //     { "name": "Valjean", "group": 2 }
-    //   ],
-    //   "links": []
-    // };
 
     this.repository.getSciaDllsPromise((data) => {
       this.data = {

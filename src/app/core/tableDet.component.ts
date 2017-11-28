@@ -11,7 +11,9 @@ import { Observable } from "rxjs/Observable";
     templateUrl: "tableDet.component.html"
 })
 export class TableDetComponent {
-    model: SciaDll = new SciaDll(-1, "Not set", "Not set", DllCategory.BussinesLogic);
+    private Create
+
+    model: SciaDll = SciaDll.Factory();
 
     constructor(
         @Inject(SHARED_STATE) private stateEvents: Observable<SharedState>,
@@ -19,7 +21,7 @@ export class TableDetComponent {
         private router: Router,
         activeRoute: ActivatedRoute) {
         stateEvents.subscribe((update) => {
-            this.model = new SciaDll(-1, "Not set", "Not set", DllCategory.BussinesLogic);
+            this.model = SciaDll.Factory();
             if (update.id != undefined && update.id > 0 && update.mode == MODES.TABLE_DET) {
                 Object.assign(this.model, this.repository.getSciaDll(update.id));
                 console.log("Table det subscribed !");
