@@ -25,17 +25,22 @@ export class TableDetComponent {
         private router: Router,
         activeRoute: ActivatedRoute) {
         this.DllId = activeRoute.snapshot.params["id"];
-        if (this.DllId > 0 && this.DllId != null) {
-          repository.getSciaDllPromise(this.DllId, (dll) => this.model = dll);
-          repository.getSciaDllDepsForSrPromise(this.DllId, (dll) => this.DllDependencies = dll);
-        }
+        this.UpdateData();
     }
 
     selectSciaDll(key: number) {
       //this.observer.next(new SharedState(MODES.TABLE_DET, key));
       this.router.navigateByUrl(`/det/${key}`, );
       this.DllId = key;
-      this.repository.getSciaDllDepsForSrPromise(this.DllId, (dll) => this.DllDependencies = dll);
+      this.UpdateData();
+    }
+
+    private UpdateData()
+    {
+      if (this.DllId > 0 && this.DllId != null) {
+        this.repository.getSciaDllPromise(this.DllId, (dll) => this.model = dll);
+        this.repository.getSciaDllDepsForSrPromise(this.DllId, (dll) => this.DllDependencies = dll);
+      }
     }
 
     // constructor(@Inject(SHARED_STATE) private stateEvents: Observable<SharedState>) {
