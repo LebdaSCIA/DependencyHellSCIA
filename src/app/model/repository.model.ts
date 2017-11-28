@@ -12,15 +12,19 @@ export class ModelRepository {
 
     constructor(private dataSource: IModelDataSource) {
         this.dataSource.getSciaDlls().subscribe(data => this.SciaDlls = data);
-        this.dataSource.getSciaDllDeps().subscribe(data => this.SciaDllDeps = data);
+        //this.dataSource.getSciaDllDeps().subscribe(data => this.SciaDllDeps = data);
     }
 
     getSciaDllsPromise(callBack: (dll : SciaDll[]) => void): void {
         this.dataSource.getSciaDlls().subscribe(data => callBack(data));
     }
 
-    getSciaDllPromise(id: number, callBack: (dll : SciaDll) => void): void {
-        this.dataSource.getSciaDlls().subscribe(data => callBack(data.find(p =>p.ID == id)));
+    getSciaDllPromise(id: number, callBack: (dll: SciaDll) => void): void {
+      this.dataSource.getSciaDll(id).subscribe(data => callBack(data));
+    }
+
+    getSciaDllDepsForSrPromise(id: number, callBack: (dll: DllDependency[]) => void): void {
+      this.dataSource.getSciaDllDepsForSrc(id).subscribe(data => callBack(data));
     }
 
     getSciaDlls(): SciaDll[] {
@@ -29,6 +33,11 @@ export class ModelRepository {
 
     getSciaDll(id: number): SciaDll {
         return this.SciaDlls.find(p => this.locator(p, id));
+    }
+
+    getDependencyForSource(id: number): DllDependency[] {
+      this.dataSource.getSciaDllDepsForSrc(id).subscribe(data => this.SciaDllDeps = data);
+      return this.SciaDllDeps;
     }
 
     // saveSciaDll(SciaDll: SciaDll) {

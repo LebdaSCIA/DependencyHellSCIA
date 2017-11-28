@@ -34,8 +34,8 @@ export class TableComponent {
     }
 
     selectSciaDll(key: number) {
-        // this.observer.next(new SharedState(MODES.TABLE_DET, key));
-        this.router.navigateByUrl(`/table/det/${key}`);
+        //this.observer.next(new SharedState(MODES.TABLE_DET, key));
+        this.router.navigateByUrl(`/det/${key}`);
     }
 
 

@@ -11,6 +11,7 @@ import { Subject } from "rxjs/Subject";
 
 export const REST_URL = new OpaqueToken("rest_url");
 export const REST_URL_DEP = new OpaqueToken("rest_url_dep");
+export const REST_URL_DEP_FOR_SRC = new OpaqueToken("rest_url_dep_for_src");
 
 @Injectable()
 export class RestDataSource implements IModelDataSource {
@@ -19,14 +20,23 @@ export class RestDataSource implements IModelDataSource {
         private http: Http,
         @Inject(REST_URL) private url: string,
         @Inject(REST_URL_DEP) private urlDep: string,
+        @Inject(REST_URL_DEP_FOR_SRC) private urlDepForSrc: string,
     ) { }
 
     getSciaDlls(): Observable<SciaDll[]> {
         return this.sendRequest(RequestMethod.Get, this.url);
     }
 
+    getSciaDll(id: number): Observable<SciaDll> {
+      return this.sendRequest(RequestMethod.Get, this.url + "/" + id);
+    }
+
     getSciaDllDeps(): Observable<DllDependency[]> {
         return this.sendRequest(RequestMethod.Get, this.urlDep);
+    }
+
+    getSciaDllDepsForSrc(idSource: number): Observable<DllDependency[]> {
+      return this.sendRequest(RequestMethod.Get, this.urlDepForSrc + idSource);
     }
 
     // saveSciaDll(SciaDll: SciaDll): Observable<SciaDll> {
