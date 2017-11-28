@@ -40,3 +40,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+DgmlToSql/.vs/DgmlToSql/v14/.suo
+DgmlToSql/DgmlToSql.VC.db
+DgmlToSql/DgmlToSql.VC.VC.opendb
