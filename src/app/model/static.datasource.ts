@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { DllCategory } from "./shared.model";
 import { SciaDll } from "./sciaDll.model";
-import { DllDependency } from "./dllDpendency.model";
+import { DllDependency } from "./dllDependency.model";
 import { IModelDataSource } from "./datasource.interface.model";
 
 // @Injectable()

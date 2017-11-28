@@ -2,6 +2,7 @@ import { Component, Inject } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { DllCategory } from "../model/shared.model";
 import { SciaDll } from "../model/SciaDll.model";
+import { DllDependency } from "../model/dllDependency.model";
 import { MODES, SharedState, SHARED_STATE } from "./sharedState.model";
 import { ModelRepository } from "../model/repository.model";
 import { Observable } from "rxjs/Observable";
@@ -11,24 +12,35 @@ import { Observable } from "rxjs/Observable";
     templateUrl: "tableDet.component.html"
 })
 export class TableDetComponent {
-    model: SciaDll = new SciaDll(-1, "Not set", "Not set", DllCategory.BussinesLogic);
+    private Create
+
+    model: SciaDll;
+
+    DllId: number;
+    DllDependencies : DllDependency[];
 
     constructor(
         @Inject(SHARED_STATE) private stateEvents: Observable<SharedState>,
         private repository: ModelRepository,
         private router: Router,
         activeRoute: ActivatedRoute) {
-        stateEvents.subscribe((update) => {
-            this.model = new SciaDll(-1, "Not set", "Not set", DllCategory.BussinesLogic);
-            if (update.id != undefined && update.id > 0 && update.mode == MODES.TABLE_DET) {
-                Object.assign(this.model, this.repository.getSciaDll(update.id));
-                console.log("Table det subscribed !");
-            }
-        });
-        let dllId: number = activeRoute.snapshot.params["id"]
-        if (dllId > 0 && dllId != null) {
-            repository.getSciaDllPromise(dllId, (dll) => this.model = dll);
-        }
+        this.DllId = activeRoute.snapshot.params["id"];
+        this.UpdateData();
+    }
+
+    selectSciaDll(key: number) {
+      //this.observer.next(new SharedState(MODES.TABLE_DET, key));
+      this.router.navigateByUrl(`/det/${key}`, );
+      this.DllId = key;
+      this.UpdateData();
+    }
+
+    private UpdateData()
+    {
+      if (this.DllId > 0 && this.DllId != null) {
+        this.repository.getSciaDllPromise(this.DllId, (dll) => this.model = dll);
+        this.repository.getSciaDllDepsForSrPromise(this.DllId, (dll) => this.DllDependencies = dll);
+      }
     }
 
     // constructor(@Inject(SHARED_STATE) private stateEvents: Observable<SharedState>) {

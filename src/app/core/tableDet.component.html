@@ -1,15 +1,32 @@
-Selected <span class="label label-warning">{{model?.name}}</span>
-<span class="label label-danger">Dependency</span>
+<div style="font-size: 25px">
+  <div style="font-size: 36px" class="badge-info">{{model?.Name}}</div>
+  <div class="badge badge-info">Category: {{model?.Category1?.Name}}</div>
+  <div class="badge badge-info">Path: {{model?.Path}}</div>
+  <div class="badge badge-info">Line of code: {{model?.LoC}}</div>
+  <div >
+    <div class="badge badge-info">Count: {{DllDependencies.length}}</div>
+  </div>
+</div>
+
 <table class="table table-sm table-bordered table-striped">
-        <tr>
-            <th>ID dependent</th>
-            <th>Name</th>
-            <th>Category</th>
-        </tr>
-        <tr *ngFor="let item of model?.dllDependency?.dependency">
-            <td style="vertical-align:middle">{{item}}</td>
-            <td style="vertical-align:middle">TODO</td>
-            <td style="vertical-align:middle">TODO</td>
-        </tr>
-    
-    </table>
+  <tr>
+    <th>ID dependent</th>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Path</th>
+    <th>Line of code</th>
+  </tr>
+  <tr *ngFor="let item of DllDependencies">
+    <td style="vertical-align:middle">{{item.SCIADLL?.ID}}</td>
+    <td style="vertical-align:middle">{{item.SCIADLL?.Name}}</td>
+    <td style="vertical-align:middle">{{item.SCIADLL?.Category1.Name}}</td>
+    <td style="vertical-align:middle">{{item.SCIADLL?.Path}}</td>
+    <td style="vertical-align:middle">{{item.SCIADLL?.LoC}}</td>
+    <td class="text-xs-center">
+      <button class="btn btn-warning btn-sm" (click)="selectSciaDll(item.SCIADLL.ID)">
+        Select
+      </button>
+    </td>
+  </tr>
+
+</table>

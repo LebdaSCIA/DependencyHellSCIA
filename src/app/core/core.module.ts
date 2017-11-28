@@ -6,10 +6,12 @@ import { ModelModule } from "../model/model.module";
 import { TableComponent } from "./table.component";
 import { GrafComponent } from "./graf.component";
 import { TableDetComponent } from "./tableDet.component";
+import { SettingComponent } from "./setting.component";
 import { SharedState, SHARED_STATE } from "./sharedState.model";
 import { Observer } from "rxjs/Observer";
 import { Subject } from "rxjs/Subject";
 import { NvD3Module } from 'ng2-nvd3';
+import { AppSetting } from "./app.setting.service";
 
 import 'd3';
 import 'nvd3';
@@ -18,9 +20,9 @@ export const SHARED_SUBJECT = new Subject<SharedState>();
 
 @NgModule({
     imports: [BrowserModule, FormsModule, ModelModule, RouterModule, NvD3Module ],
-    declarations: [TableComponent, GrafComponent, TableDetComponent],
-    exports: [ModelModule, TableComponent, GrafComponent, TableDetComponent],
-    providers: [{ provide: SHARED_STATE, useValue: SHARED_SUBJECT }]
+    declarations: [TableComponent, GrafComponent, TableDetComponent, SettingComponent],
+    exports: [ModelModule, TableComponent, GrafComponent, TableDetComponent, SettingComponent],
+    providers: [AppSetting, { provide: SHARED_STATE, useValue: SHARED_SUBJECT }]
     // providers: [{
     //     provide: SHARED_STATE,
     //     deps: [],
