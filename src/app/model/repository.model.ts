@@ -8,7 +8,7 @@ import { IModelDataSource } from "./datasource.interface.model";
 export class ModelRepository {
     private SciaDlls = new Array<SciaDll>();
     private SciaDllDeps = new Array<DllDependency>();
-    private locator = (p: SciaDll, id: number) => p.id == id;
+    private locator = (p: SciaDll, id: number) => p.ID == id;
 
     constructor(private dataSource: IModelDataSource) {
         this.dataSource.getSciaDlls().subscribe(data => this.SciaDlls = data);
@@ -20,7 +20,7 @@ export class ModelRepository {
     }
 
     getSciaDllPromise(id: number, callBack: (dll : SciaDll) => void): void {
-        this.dataSource.getSciaDlls().subscribe(data => callBack(data.find(p =>p.id == id)));
+        this.dataSource.getSciaDlls().subscribe(data => callBack(data.find(p =>p.ID == id)));
     }
 
     getSciaDlls(): SciaDll[] {
