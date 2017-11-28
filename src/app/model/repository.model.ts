@@ -8,7 +8,7 @@ import { IModelDataSource } from "./datasource.interface.model";
 export class ModelRepository {
     private SciaDlls = new Array<SciaDll>();
     private SciaDllDeps = new Array<DllDependency>();
-    private locator = (p: SciaDll, id: number) => p.ID == id;
+    private locator = (p: SciaDll, id: number) => p.id == id;
 
     constructor(private dataSource: IModelDataSource) {
         this.dataSource.getSciaDlls().subscribe(data => this.SciaDlls = data);
