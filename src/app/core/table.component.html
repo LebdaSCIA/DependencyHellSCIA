@@ -1,34 +1,35 @@
-<table class="table table-sm table-bordered table-striped">
-    <tr>
+  <table class="table table-sm table-bordered table-striped">
+      <tr>
         <th>ID</th>
         <th>Name</th>
         <th>Category</th>
+        <th>Path</th>
         <th>Dependency</th>
         <th>#</th>
-    </tr>
-    <tr *ngFor="let item of getSciaDlls()">
+      </tr>
+      <tr *ngFor="let item of getSciaDlls()">
         <td style="vertical-align:middle">{{item.ID}}</td>
         <td style="vertical-align:middle">{{item.Name}}</td>
-        <td style="vertical-align:middle">{{item.Category}}</td>
+        <td style="vertical-align:middle">{{item.Category1.Name}}</td>
         <td style="vertical-align:middle">{{item.Path}}</td>
+        <td style="vertical-align:middle">{{item.LoC}}</td>
         <td style="vertical-align:middle">
-            <div *ngFor="let itemDep of item.dllDependency?.dependency">
-                {{itemDep}}
-            </div>
+          <div *ngFor="let itemDep of item.dllDependency?.dependency">
+            {{itemDep}}
+          </div>
         </td>
         <td class="text-xs-center">
-            <button class="btn btn-warning btn-sm" (click)="selectSciaDll(item.id)">
-                Select
-            </button>
+          <button class="btn btn-warning btn-sm" (click)="selectSciaDll(item.ID)">
+            Select
+          </button>
         </td>
-    </tr>
+      </tr>
+    </table>
 
-</table>
-
-<router-outlet></router-outlet>
-<!-- <button class="btn btn-primary" (click)="createProduct()">
-    Create New Product
-</button>
-<button class="btn btn-danger" (click)="deleteProduct(-1)">
-    Generate HTTP Error
-</button> -->
+  <!--<router-outlet></router-outlet>-->
+  <!-- <button class="btn btn-primary" (click)="createProduct()">
+      Create New Product
+  </button>
+  <button class="btn btn-danger" (click)="deleteProduct(-1)">
+      Generate HTTP Error
+  </button> -->

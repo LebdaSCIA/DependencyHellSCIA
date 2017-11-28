@@ -20,9 +20,10 @@ import { AppComponent } from './app.component';
     RouterModule.forRoot([
       { path: "table", component: TableComponent,
       children: [ 
-        { path: "det/:id", component: TableDetComponent }, 
         { path: "**", redirectTo: "/table" } 
-        ]  },
+        ]
+      },
+      { path: "det/:id", component: TableDetComponent },
       { path: "graf", component: GrafComponent },
       { path: "**", redirectTo: "/table" }
     ])],
