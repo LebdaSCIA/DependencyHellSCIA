@@ -5,7 +5,10 @@ export enum DllCategory
     Storage,
     Checks,
     GUI,
-    UT
+    UT,
+    unknown,
+    Commands,
+    Nexis
 }
 
 export enum DllStatus

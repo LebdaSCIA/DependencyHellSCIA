@@ -12,26 +12,41 @@ import { Observable } from "rxjs/Observable";
     templateUrl: "table.component.html"
 })
 export class TableComponent {
-
+    SciaDlls = new Array<SciaDll>();
+    SciaDllsAll = new Array<SciaDll>();
     constructor(
         private appSetting: AppSetting,
         private router: Router,
-        private modelRepo: ModelRepository,
+        private repository: ModelRepository,
         @Inject(SHARED_STATE) private stateEvents: Observable<SharedState>) {
+        repository.getSciaDllsPromise((dlls) => {
+            this.SciaDllsAll = dlls;
+            for (let item of this.SciaDllsAll) {
+                this.SciaDlls.push(item);
+            }
+        });
+
         stateEvents.subscribe((update) => {
-            let kunda : number = 1;
-            kunda++;
+            this.SciaDlls = new Array<SciaDll>();
+            for (let item of this.SciaDllsAll) {
+                this.SciaDlls.push(item);
+            }
+            for (let item of appSetting.catset) {
+                if (!item.on) {
+                    this.SciaDlls = this.SciaDlls.filter(dll => dll.Category1.Name != item.name);
+                }
+            }
         });
 
     }
 
-    getSciaDll(key: number): SciaDll {
-        return this.modelRepo.getSciaDll(key);
-    }
+    // getSciaDll(key: number): SciaDll {
+    //     return this.modelRepo.getSciaDll(key);
+    // }
 
-    getSciaDlls(): SciaDll[] {
-        return this.modelRepo.getSciaDlls();
-    }
+    // getSciaDlls(): SciaDll[] {
+    //     return this.modelRepo.getSciaDlls();
+    // }
 
     selectSciaDll(key: number) {
         //this.observer.next(new SharedState(MODES.TABLE_DET, key));

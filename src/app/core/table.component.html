@@ -4,20 +4,16 @@
         <th>Name</th>
         <th>Category</th>
         <th>Path</th>
-        <th>Dependency</th>
+        <th>LoC</th>
+        <th>Comment</th>
         <th>#</th>
       </tr>
-      <tr *ngFor="let item of getSciaDlls()">
+      <tr *ngFor="let item of SciaDlls">
         <td style="vertical-align:middle">{{item.ID}}</td>
         <td style="vertical-align:middle">{{item.Name}}</td>
         <td style="vertical-align:middle">{{item.Category1.Name}}</td>
         <td style="vertical-align:middle">{{item.Path}}</td>
         <td style="vertical-align:middle">{{item.LoC}}</td>
-        <td style="vertical-align:middle">
-          <div *ngFor="let itemDep of item.dllDependency?.dependency">
-            {{itemDep}}
-          </div>
-        </td>
         <td style="vertical-align:middle">{{item.coment}}</td>
         <td class="text-xs-center">
           <button class="btn btn-warning btn-sm" (click)="selectSciaDll(item.ID)">

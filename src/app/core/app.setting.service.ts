@@ -6,7 +6,7 @@ export class CategorySet {
     callBack4OnSet = new Array<() => void>();
     constructor(
         public name: string,
-        cat: DllCategory) {
+        public cat: DllCategory) {
     }
 
     get on(): boolean {
@@ -31,6 +31,9 @@ export class AppSetting {
         this.catset.push(new CategorySet("Kernel", DllCategory.Kernel));
         this.catset.push(new CategorySet("Storage", DllCategory.Storage));
         this.catset.push(new CategorySet("UT", DllCategory.UT));
+        this.catset.push(new CategorySet("unknown", DllCategory.unknown));
+        this.catset.push(new CategorySet("Commands", DllCategory.Commands));
+        this.catset.push(new CategorySet("Nexis", DllCategory.Nexis));
     }
     addCallBack4OnSet(callback : () => void)
     {
