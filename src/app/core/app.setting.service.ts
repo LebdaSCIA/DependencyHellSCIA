@@ -25,15 +25,16 @@ export class CategorySet {
 export class AppSetting {
     catset = new Array<CategorySet>();
     constructor() {
-        this.catset.push(new CategorySet("Checks", DllCategory.Checks));
-        this.catset.push(new CategorySet("DataModel", DllCategory.DataModel));
-        this.catset.push(new CategorySet("GUI", DllCategory.GUI));
         this.catset.push(new CategorySet("Kernel", DllCategory.Kernel));
         this.catset.push(new CategorySet("Storage", DllCategory.Storage));
-        this.catset.push(new CategorySet("UT", DllCategory.UT));
-        this.catset.push(new CategorySet("unknown", DllCategory.unknown));
+        this.catset.push(new CategorySet("DataModel", DllCategory.DataModel));
+        this.catset.push(new CategorySet("Algorithms", DllCategory.Algorithms));
+        this.catset.push(new CategorySet("Checks", DllCategory.Checks));
         this.catset.push(new CategorySet("Commands", DllCategory.Commands));
+        this.catset.push(new CategorySet("GUI", DllCategory.GUI));
+        this.catset.push(new CategorySet("UT", DllCategory.UT));
         this.catset.push(new CategorySet("Nexis", DllCategory.Nexis));
+        this.catset.push(new CategorySet("unknown", DllCategory.unknown));
     }
     addCallBack4OnSet(callback : () => void)
     {

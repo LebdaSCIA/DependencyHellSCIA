@@ -8,7 +8,8 @@ export enum DllCategory
     UT,
     unknown,
     Commands,
-    Nexis
+    Nexis,
+    Algorithms
 }
 
 export enum DllStatus
