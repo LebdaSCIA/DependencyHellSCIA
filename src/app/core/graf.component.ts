@@ -11,7 +11,7 @@ declare let d3: any;
 let colors = [
   "black", //0 non existing
   "black", //1 unknown
-  "yellow", //2 kernel
+  "orange", //2 kernel
   "blue", //3 DataModel
   "red", //4 checks
   "green", //5 GUI
@@ -22,8 +22,11 @@ let colors = [
   "LightBlue", //10 Storage
 ];
 
+let labels: boolean = true;
+
 @Component({
   template: `
+    <button class="btn btn-danger btn-sm" (click)="changeSize()">Switch Labels</button>  
     <div>
       <nvd3 [options]="options" [data]="data"></nvd3>
     </div>
@@ -50,12 +53,16 @@ export class GrafComponent implements OnInit {
     return this.repository.getSciaDlls();
   }
 
-  ngOnInit() {
-    var color = d3.scale.category20();
+  changeSize(){
+    labels = !labels;
+    this.opts();
+  }
+
+  opts() {
     this.options = {
       chart: {
         type: 'forceDirectedGraph',
-        height: (function () { return nv.utils.windowSize().height })(),
+        height: (function () { return nv.utils.windowSize().height - 200})(),
         width: (function () { return nv.utils.windowSize().width })(),
         margin: { top: 20, right: 20, bottom: 20, left: 20 },
         color: function (d) {
@@ -68,10 +75,15 @@ export class GrafComponent implements OnInit {
             .attr("dy", ".35em")
             .text(function (d) { return d.name })
             .attr('fill', function(d) { return colors[d.group] })
-            .style('font-size', '20px');
+            .style('font-size', labels? '15px':'0px');
         }
       }
-    }
+  }
+}
+
+  ngOnInit() {
+    this.opts();
+
     /*
     this.data = {
       "nodes": [
