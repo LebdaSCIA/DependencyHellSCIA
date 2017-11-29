@@ -9,16 +9,17 @@ import { Nvd3Links } from "./nvd3Nodes.model";
 declare let d3: any;
 
 let colors = [
-  "yellow", // kernel
-  "blue", // DataModel
-  "LightBlue", // Storage
-  "red", // checks
-  "green", // GUI
-  "gray", // UT
-  "black", // unknown
-  "OrangeRed", // Commands
-  "violet", // Nexis
-  "red", // Algorithms
+  "black", //0 non existing
+  "black", //1 unknown
+  "yellow", //2 kernel
+  "blue", //3 DataModel
+  "red", //4 checks
+  "green", //5 GUI
+  "gray", //6 UT
+  "OrangeRed", //7 Commands
+  "violet", //8 Nexis
+  "red", //9 Algorithms
+  "LightBlue", //10 Storage
 ];
 
 @Component({
