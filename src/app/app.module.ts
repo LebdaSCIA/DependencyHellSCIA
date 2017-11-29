@@ -9,6 +9,8 @@ import { TableComponent } from './core/table.component';
 import { GrafComponent } from './core/graf.component';
 import { TableDetComponent } from './core/tableDet.component';
 import { AppComponent } from './app.component';
+import { D3Service } from 'd3-ng2-service';
+import { D3Interactive } from './core/D3Interactive';
 
 @NgModule({
   imports: [
@@ -25,12 +27,14 @@ import { AppComponent } from './app.component';
       },
       { path: "det/:id", component: TableDetComponent },
       { path: "graf", component: GrafComponent },
+      { path: "interactive", component: D3Interactive },
       { path: "**", redirectTo: "/table" }
     ])],
   declarations: [
-    AppComponent
+    AppComponent,
+    D3Interactive
   ],
-  providers: [],
+  providers: [D3Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
