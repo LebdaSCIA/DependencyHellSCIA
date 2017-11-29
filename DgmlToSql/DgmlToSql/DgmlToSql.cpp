@@ -78,6 +78,10 @@ eCategory GetCategory(const project& oneDLL)
 	{
 		return eCategory::eChecks;
 	}
+	if (oneDLL.name.find(L"Cmds") != string::npos)
+	{
+		return eCategory::eCommands;
+	}
 	if (oneDLL.name.find(L"Service") != string::npos)
 	{
 		return eCategory::eCommands;
@@ -109,10 +113,10 @@ eCategory GetCategory(const project& oneDLL)
 	return eCategory::eUnknown;
 }
 
-int GetLoC(const project& oneDLL)
+int GetLoC(const wstring& sourceCodeBase, const project& oneDLL)
 {
 	size_t pos1 = oneDLL.path.rfind('\\');
-	wstring path = L"c:\\Deve\\D64\\A\\Src\\ADMIN\\" + oneDLL.path.substr(0U, pos1);
+	wstring path = sourceCodeBase + oneDLL.path.substr(0U, pos1);
 	vector<wstring> allFiles;
 	HANDLE dir;
 	WIN32_FIND_DATA file_data;
@@ -150,7 +154,7 @@ int GetLoC(const project& oneDLL)
 	return LoC;
 }
 
-vector<project> ReadDlls(wfstream& instream)
+vector<project> ReadDlls(const wstring& sourceCodeBase, wfstream& instream)
 {
 	auto startTime = chrono::steady_clock::now();
 
@@ -174,7 +178,7 @@ vector<project> ReadDlls(wfstream& instream)
 		{
 			oneDLL.id = GetID(line);
 			oneDLL.category = GetCategory(oneDLL);
-			oneDLL.LoC = GetLoC(oneDLL);
+			oneDLL.LoC = GetLoC(sourceCodeBase, oneDLL);
 			projects.push_back(oneDLL);
 			wcout << oneDLL.id << L": ";
 			wcout << oneDLL.name << L"; LoC = " << oneDLL.LoC << L"\r\n";
@@ -238,7 +242,7 @@ void WriteOutputSciaDlls(const string& fileName, const vector<project>& projects
 
 void WriteOutputLinks(const string& fileName, const vector<link>& links)
 {
-	wstring dependHeader = L"INSERT dbo.DllDependency (ID, dllSourceID, dllTargetID) VALUES\r\n";
+	wstring dependHeader = L"INSERT dbo.DllDependency (ID, dllSourceID, dllTargetID, isTransient) VALUES\r\n";
 	wfstream outstream2(fileName, ios::out | ios::binary);
 	outstream2 << dependHeader;
 	int counter = 1;
@@ -268,12 +272,13 @@ int main(int argc, char *argv[], char *envp[])
 
 	auto fileName = string(argv[1]);
 	wfstream instream(fileName, ios::in | ios::binary);
+	auto sourceCodeBase = wstring(L"c:\\Deve\\D64\\A\\Src\\ADMIN\\");
 
-	auto projects = ReadDlls(instream);
+	auto projects = ReadDlls(sourceCodeBase, instream);
 	auto links = ReadLinks(instream);
 
-// 	CReduceDependencies reduce;
-// 	reduce.ModifyDependenciesWithFlags(links);
+  	CReduceDependencies reduce;
+  	reduce.ModifyDependenciesWithTransientFlags(links);
 
 	WriteOutputSciaDlls("c:\\Deve\\SCIADllInfo.txt", projects);
 	WriteOutputLinks("c:\\Deve\\SCIADllLinks.txt", links);
