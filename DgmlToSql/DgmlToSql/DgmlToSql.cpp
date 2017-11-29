@@ -84,13 +84,18 @@ eCategory GetCategory(const project& oneDLL)
 	static const vector<substrToCategory> vec =
 	{
 		{ L"r:\\" , eCategory::eNexis }
-		,{ L"cmds" , eCategory::eCommands }
+		,{ L"dlg" , eCategory::eGUI }
+		,{ L"geom" , eCategory::eAlgorithms }
+		,{ L"cmd" , eCategory::eCommands }
+		,{ L"service" , eCategory::eCommands }
 		,{ L"ut" , eCategory::eUT }
 		,{ L"test" , eCategory::eUT }
 		,{ L"result" , eCategory::eChecks }
 		,{ L"check" , eCategory::eChecks }
 		,{ L"nexis" , eCategory::eNexis }
 		,{ L"cross" , eCategory::eDataModel }
+		,{ L"code" , eCategory::eDataModel }
+		,{ L"material" , eCategory::eDataModel }
 		,{ L"css" , eCategory::eDataModel }
 		,{ L"data" , eCategory::eDataModel }
 		,{ L"lib" , eCategory::eDataModel }
