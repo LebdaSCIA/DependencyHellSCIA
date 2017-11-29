@@ -1,16 +1,22 @@
+Shown: <span class="badge badge-info"> <i class="fa fa-shopping-cart"></i> {{SciaDlls.length  }}</span>
+
 <table class="table table-sm table-bordered table-striped">
   <tr>
     <th>ID</th>
     <th>
-        <button class="btn btn-danger btn-sm" (click)="sortName()">
-          Name
-        </button>
-      </th>
+      <button class="btn btn-danger btn-sm" (click)="sortName()">
+        Name
+        <i *ngIf="!sortInfoName.ascending && sortInfoName.sorted" class="fa fa-sort-numeric-desc" aria-hidden="true"></i>
+        <i *ngIf="sortInfoName.ascending && sortInfoName.sorted" class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+      </button>
+    </th>
     <th>Category</th>
     <th>Path</th>
     <th>
       <button class="btn btn-danger btn-sm" (click)="sortLoC()">
         LoC
+        <i *ngIf="!sortInfoLoc.ascending && sortInfoLoc.sorted" class="fa fa-sort-numeric-desc" aria-hidden="true"></i>
+        <i *ngIf="sortInfoLoc.ascending && sortInfoLoc.sorted" class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
       </button>
     </th>
     <th>Comment</th>

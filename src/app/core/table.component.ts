@@ -50,6 +50,7 @@ export class TableComponent {
     }
 
     sortLoC() {
+        this.sortInfoLoc.sorted = true;
         let backUp = this.sortInfoLoc.ascending;
         if(backUp)
         {
@@ -63,6 +64,7 @@ export class TableComponent {
     }
 
     sortName() {
+        this.sortInfoName.sorted = true;
         let backUp = this.sortInfoName.ascending;
         if(backUp)
         {
