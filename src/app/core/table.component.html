@@ -1,30 +1,38 @@
-  <table class="table table-sm table-bordered table-striped">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Path</th>
-        <th>LoC</th>
-        <th>Comment</th>
-        <th>#</th>
-      </tr>
-      <tr *ngFor="let item of SciaDlls">
-        <td style="vertical-align:middle">{{item.ID}}</td>
-        <td style="vertical-align:middle">{{item.Name}}</td>
-        <td style="vertical-align:middle">{{item.Category1.Name}}</td>
-        <td style="vertical-align:middle">{{item.Path}}</td>
-        <td style="vertical-align:middle">{{item.LoC}}</td>
-        <td style="vertical-align:middle">{{item.coment}}</td>
-        <td class="text-xs-center">
-          <button class="btn btn-warning btn-sm" (click)="selectSciaDll(item.ID)">
-            Select
-          </button>
-        </td>
-      </tr>
-    </table>
+<table class="table table-sm table-bordered table-striped">
+  <tr>
+    <th>ID</th>
+    <th>
+        <button class="btn btn-danger btn-sm" (click)="sortName()">
+          Name
+        </button>
+      </th>
+    <th>Category</th>
+    <th>Path</th>
+    <th>
+      <button class="btn btn-danger btn-sm" (click)="sortLoC()">
+        LoC
+      </button>
+    </th>
+    <th>Comment</th>
+    <th>#</th>
+  </tr>
+  <tr *ngFor="let item of SciaDlls">
+    <td style="vertical-align:middle">{{item.ID}}</td>
+    <td style="vertical-align:middle">{{item.Name}}</td>
+    <td style="vertical-align:middle">{{item.Category1.Name}}</td>
+    <td style="vertical-align:middle">{{item.Path}}</td>
+    <td style="vertical-align:middle">{{item.LoC}}</td>
+    <td style="vertical-align:middle">{{item.coment}}</td>
+    <td class="text-xs-center">
+      <button class="btn btn-warning btn-sm" (click)="sortLoC(item.ID)">
+        Select
+      </button>
+    </td>
+  </tr>
+</table>
 
-  <!--<router-outlet></router-outlet>-->
-  <!-- <button class="btn btn-primary" (click)="createProduct()">
+<!--<router-outlet></router-outlet>-->
+<!-- <button class="btn btn-primary" (click)="createProduct()">
       Create New Product
   </button>
   <button class="btn btn-danger" (click)="deleteProduct(-1)">

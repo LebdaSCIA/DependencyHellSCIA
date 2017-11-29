@@ -7,11 +7,13 @@ import { TableComponent } from "./table.component";
 import { GrafComponent } from "./graf.component";
 import { TableDetComponent } from "./tableDet.component";
 import { SettingComponent } from "./setting.component";
+import { DataGridComponent } from "./dataGrid.component";
 import { SharedState, SHARED_STATE } from "./sharedState.model";
 import { Observer } from "rxjs/Observer";
 import { Subject } from "rxjs/Subject";
 import { NvD3Module } from 'ng2-nvd3';
 import { AppSetting } from "./app.setting.service";
+// import { DataGridModule } from 'angular-ui-grid';
 
 import 'd3';
 import 'nvd3';
@@ -19,9 +21,9 @@ import 'nvd3';
 export const SHARED_SUBJECT = new Subject<SharedState>();
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, ModelModule, RouterModule, NvD3Module ],
-    declarations: [TableComponent, GrafComponent, TableDetComponent, SettingComponent],
-    exports: [ModelModule, TableComponent, GrafComponent, TableDetComponent, SettingComponent],
+    imports: [BrowserModule, FormsModule, ModelModule, RouterModule, NvD3Module/*, DataGridModule*/ ],
+    declarations: [TableComponent, GrafComponent, TableDetComponent, SettingComponent, DataGridComponent],
+    exports: [ModelModule, TableComponent, GrafComponent, TableDetComponent, SettingComponent, DataGridComponent],
     providers: [AppSetting, { provide: SHARED_STATE, useValue: SHARED_SUBJECT }]
     // providers: [{
     //     provide: SHARED_STATE,
