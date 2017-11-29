@@ -42,6 +42,11 @@ int ci_find_substr(const wstring& str1, const wstring& str2, const std::locale& 
 	else return -1; // not found
 }
 
+bool is_substr(const wstring& str1, const wstring& str2)
+{
+	return ci_find_substr(str1, str2) != -1;
+}
+
 int GetID(const wstring& item)
 {
 	size_t pos1 = item.find('@');
@@ -68,47 +73,37 @@ inline wstring ParsePath(const wstring& line)
 	return line.substr(pos1 + 1, pos2 - pos1 - 1);
 }
 
+struct substrToCategory
+{
+	substrToCategory(wstring s, eCategory c) : substr(s), ctg(c) {}
+	wstring substr;
+	eCategory ctg;
+};
 eCategory GetCategory(const project& oneDLL)
 {
-	if (oneDLL.path.find(L"R:\\") != string::npos)
+	static const vector<substrToCategory> vec =
 	{
-		return eCategory::eNexis;
-	}
-	if (oneDLL.name.find(L"Result") != string::npos)
+		{ L"r:\\" , eCategory::eNexis }
+		,{ L"cmds" , eCategory::eCommands }
+		,{ L"ut" , eCategory::eUT }
+		,{ L"test" , eCategory::eUT }
+		,{ L"result" , eCategory::eChecks }
+		,{ L"check" , eCategory::eChecks }
+		,{ L"nexis" , eCategory::eNexis }
+		,{ L"cross" , eCategory::eDataModel }
+		,{ L"css" , eCategory::eDataModel }
+		,{ L"data" , eCategory::eDataModel }
+		,{ L"lib" , eCategory::eDataModel }
+		// folders must be lats
+		,{ L"\\lat" , eCategory::eGUI }
+		,{ L"\\mic" , eCategory::eKernel }
+		,{ L"\\lok" , eCategory::eGUI }
+		,{ L"\\tra" , eCategory::eKernel }
+	};
+	auto itf = find_if(vec.cbegin(), vec.cend(), [oneDLL](const substrToCategory& i) { return is_substr(oneDLL.path, i.substr); });
+	if (itf != vec.cend())
 	{
-		return eCategory::eChecks;
-	}
-	if (oneDLL.name.find(L"Cmds") != string::npos)
-	{
-		return eCategory::eCommands;
-	}
-	if (oneDLL.name.find(L"Service") != string::npos)
-	{
-		return eCategory::eCommands;
-	}
-	if (oneDLL.name.find(L"UT") != string::npos)
-	{
-		return eCategory::eUT;
-	}
-	if (oneDLL.name.find(L"Test") != string::npos)
-	{
-		return eCategory::eUT;
-	}
-	if (oneDLL.path.find(L"\\Lat") != string::npos)
-	{
-		return eCategory::eKernel;
-	}
-	if (oneDLL.path.find(L"\\Mic") != string::npos)
-	{
-		return eCategory::eKernel;
-	}
-	if (oneDLL.path.find(L"\\LOK") != string::npos)
-	{
-		return eCategory::eGUI;
-	}
-	if (oneDLL.path.find(L"\\Tra") != string::npos)
-	{
-		return eCategory::eGUI;
+		return itf->ctg;
 	}
 	return eCategory::eUnknown;
 }
@@ -282,6 +277,12 @@ int main(int argc, char *argv[], char *envp[])
 
 	WriteOutputSciaDlls("c:\\Deve\\SCIADllInfo.txt", projects);
 	WriteOutputLinks("c:\\Deve\\SCIADllLinks.txt", links);
+
+	size_t countTransient = 0U;
+	for (auto& li : links)
+	{
+		if (li.isTransient) { ++countTransient; }
+	}
 
 	cout << endl;
 	return 0;

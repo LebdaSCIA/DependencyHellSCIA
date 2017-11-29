@@ -53,7 +53,7 @@ CREATE TABLE dbo.DllDependency
 	ID int NOT NULL,
 	dllSourceID int NOT NULL,
 	dllTargetID int NOT NULL,
-	isTransient int NOT NULL,
+	isTransient bit NOT NULL,
 	CONSTRAINT PK_DllDependency PRIMARY KEY NONCLUSTERED (ID),
 	CONSTRAINT FK_dllSourceID FOREIGN KEY (dllSourceID)
 	    REFERENCES dbo.SCIADLL (ID)
@@ -82,5 +82,6 @@ INSERT dbo.Category (ID, Name)
     (5, 'GUI'),
     (6, 'UT'),
     (7, 'Commands'),
-	(8, 'Nexis')
+	(8, 'Nexis'),
+	(9, 'Algorithms')
 GO
