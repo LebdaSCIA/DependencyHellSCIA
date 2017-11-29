@@ -31,21 +31,13 @@ struct link
 	bool isTransient = false;
 };
 
-struct linked_id_with_flag
-{
-	linked_id_with_flag(short id, bool b) : linked_id(id), transient(b) {}
-	short linked_id = 0;
-	bool transient = false;
-};
-
-using vecLinkswF = vector<linked_id_with_flag>;
-using setLinks = vector<short>;
+using vecOfIDs = vector<short>;
+using setOfIDs = set<short>;
 
 struct info_dll
 {
 	short id;
-	vecLinkswF dep;
-	unique_ptr<setLinks> all;
+	vecOfIDs dep;
+	vecOfIDs transient;
+	unique_ptr<setOfIDs> all;
 };
-
-using mapTargetToLinkswF = map<short, info_dll>;

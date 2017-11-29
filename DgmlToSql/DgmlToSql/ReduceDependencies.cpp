@@ -7,24 +7,20 @@
 // link: dllSourceID = 19, dllTargetID = 20
 // meaning is: 'target' is dependent on 'source'
 
-void CReduceDependencies::ModifyDependenciesWithFlags(vector<link>& links)
+void CReduceDependencies::ModifyDependenciesWithTransientFlags(vector<link>& links)
 {
-	mapTargetToLinkswF mapTargets = GetMapTargetToLinks(links);
-	for (auto& one : mapTargets)
+	CreateMapAllDlls(links);
+	FindAllTransient();
+	for (link& li : links)
 	{
-		short targetId = one.first;
-		cout << targetId << " - start\r\n";
-		auto& dllinfo = one.second;
-		for (auto& oneLinkwFlag : dllinfo.dep)
+		auto itf = m_mapAllDlls.find(li.target);
+		auto& oneDll = itf->second;
+		for (short idTransient : oneDll.transient)
 		{
-			if (IsLinkedId(oneLinkwFlag.linked_id, FilterDepFlags(oneLinkwFlag.linked_id, dllinfo.dep), mapTargets))
+			if (li.source == idTransient)
 			{
-				oneLinkwFlag.transient = true;
-				auto itf = find_if(links.begin(), links.end(), [=](link& ln) { return ln.target == targetId && ln.source == oneLinkwFlag.linked_id; });
-				if (itf != links.cend())
-				{
-					itf->isTransient = true;
-				}
+				li.isTransient = true;
+				break;
 			}
 		}
 	}
@@ -39,52 +35,71 @@ info_dll CReduceDependencies::GetDependenciesForTarget(short target, const vecto
 	{
 		if (one.target == target)
 		{
-			flags.dep.push_back(linked_id_with_flag{ one.source, false });
+			flags.dep.push_back(one.source);
 		}
 	}
 	flags.dep.shrink_to_fit();
 	return flags;
 }
 
-mapTargetToLinkswF CReduceDependencies::GetMapTargetToLinks(const vector<link>& links)
+void CReduceDependencies::CreateMapAllDlls(const vector<link>& links)
 {
-	mapTargetToLinkswF mapTargets;
+	m_mapAllDlls.clear();
 	for (const auto& one : links)
 	{
-		if (mapTargets.find(one.target) == mapTargets.cend())
+		if (m_mapAllDlls.find(one.target) == m_mapAllDlls.cend())
 		{
-			mapTargets[one.target] = GetDependenciesForTarget(one.target, links);
-			cout << one.target << "; dep = " << mapTargets[one.target].dep.size() << "\r\n";
+			m_mapAllDlls[one.target] = GetDependenciesForTarget(one.target, links);
+			cout << one.target << "; dep_count = " << m_mapAllDlls[one.target].dep.size() << "\r\n";
 		}
 	}
-	return mapTargets;
 }
 
-vecLinkswF CReduceDependencies::FilterDepFlags(short id, vecLinkswF v)
+void CReduceDependencies::AddAllLevelsDependencies(short idTarget, setOfIDs& all)
 {
-	v.erase(remove_if(v.begin(), v.end(), [id](const linked_id_with_flag& i) { return i.linked_id == id; }), v.end());
-	return v;
-};
+	auto itf = m_mapAllDlls.find(idTarget);
+	if (itf == m_mapAllDlls.cend())
+	{
+		return;
+	}
+	const auto& oneDllInfo = itf->second;
+	if (oneDllInfo.all)
+	{
+		all.insert(oneDllInfo.all->begin(), oneDllInfo.all->end());
+		return;
+	}
+	for (short id : oneDllInfo.dep)
+	{
+		all.insert(id);
+		AddAllLevelsDependencies(id, all);
+	}
+}
 
-bool CReduceDependencies::IsLinkedId(short id, const vecLinkswF& dependLinksActualLevel, const mapTargetToLinkswF& mapTargets)
+void CReduceDependencies::FindAllTransient()
 {
-	for (auto& i : dependLinksActualLevel)
+	for (auto& p : m_mapAllDlls)
 	{
-		if (i.linked_id == id)
+		auto& oneDll = p.second;
+		cout << "Find all dependencies for id = " << oneDll.id;
 		{
-			return true;
-		}
-	}
-	for (const auto& oneLink : dependLinksActualLevel)
-	{
-		auto itf2 = mapTargets.find(oneLink.linked_id);
-		if (itf2 != mapTargets.cend())
-		{
-			if (IsLinkedId(id, itf2->second.dep, mapTargets))
+			setOfIDs all;
+			for (short id : oneDll.dep)
 			{
-				return true;
+				AddAllLevelsDependencies(id, all);
 			}
+			if (!all.empty())
+			{
+				for (short id : oneDll.dep)
+				{
+					if (all.find(id) != all.cend())
+					{
+						oneDll.transient.push_back(id);
+					}
+				}
+			}
+			all.insert(oneDll.dep.cbegin(), oneDll.dep.cend());
+			oneDll.all = make_unique<setOfIDs>(std::move(all));
 		}
+		cout << " " << oneDll.dep.size() << "/" << oneDll.all->size() << "/" << oneDll.transient.size() << "\r\n";
 	}
-	return false;
 }

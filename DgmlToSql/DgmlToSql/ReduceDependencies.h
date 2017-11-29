@@ -5,11 +5,15 @@
 class CReduceDependencies final
 {
 public:
-	void ModifyDependenciesWithFlags(vector<link>& links);
+	void ModifyDependenciesWithTransientFlags(vector<link>& links);
 
 protected:
+	void CreateMapAllDlls(const vector<link>& links);
 	info_dll GetDependenciesForTarget(short target, const vector<link>& links);
-	mapTargetToLinkswF GetMapTargetToLinks(const vector<link>& links);
-	vecLinkswF FilterDepFlags(short id, vecLinkswF v);
-	bool IsLinkedId(short id, const vecLinkswF& dependLinksActualLevel, const mapTargetToLinkswF& mapTargets);
+
+	void FindAllTransient();
+	void AddAllLevelsDependencies(short idTarget, setOfIDs& all);
+
+private:
+	map<short, info_dll> m_mapAllDlls;
 };

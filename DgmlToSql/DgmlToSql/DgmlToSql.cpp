@@ -115,6 +115,7 @@ eCategory GetCategory(const project& oneDLL)
 
 int GetLoC(const wstring& sourceCodeBase, const project& oneDLL)
 {
+	return 0; // TODO enable
 	size_t pos1 = oneDLL.path.rfind('\\');
 	wstring path = sourceCodeBase + oneDLL.path.substr(0U, pos1);
 	vector<wstring> allFiles;
@@ -277,8 +278,8 @@ int main(int argc, char *argv[], char *envp[])
 	auto projects = ReadDlls(sourceCodeBase, instream);
 	auto links = ReadLinks(instream);
 
-//  	CReduceDependencies reduce;
-//  	reduce.ModifyDependenciesWithFlags(links);
+  	CReduceDependencies reduce;
+  	reduce.ModifyDependenciesWithTransientFlags(links);
 
 	WriteOutputSciaDlls("c:\\Deve\\SCIADllInfo.txt", projects);
 	WriteOutputLinks("c:\\Deve\\SCIADllLinks.txt", links);
