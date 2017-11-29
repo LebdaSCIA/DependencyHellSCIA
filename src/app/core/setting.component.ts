@@ -32,7 +32,7 @@ export class SettingComponent {
         if(item.cat == DllCategory.Kernel)
         {
             return {
-                color: "yellow"
+                color: "orange"
             };
         }
         else if(item.cat == DllCategory.Algorithms)
