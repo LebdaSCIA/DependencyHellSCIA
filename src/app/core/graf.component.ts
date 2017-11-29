@@ -101,7 +101,7 @@ export class GrafComponent implements OnInit {
       this.repository.getSciaDllDepsPromise((data) => {
         this.data = {
           "nodes": this.data.nodes,
-          "links": new Nvd3Links(data, dllArray).links,
+          "links": new Nvd3Links(data.filter(q => !q.isTransient), dllArray).links,
         }
       });     
 
