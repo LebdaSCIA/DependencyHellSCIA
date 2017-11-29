@@ -11,7 +11,8 @@ enum class eCategory
 	eUT,
 	eCommands,
 	eNexis,
-	eAlgorithms
+	eAlgorithms,
+	eStorage
 };
 
 struct project

@@ -83,5 +83,6 @@ INSERT dbo.Category (ID, Name)
     (6, 'UT'),
     (7, 'Commands'),
 	(8, 'Nexis'),
-	(9, 'Algorithms')
+	(9, 'Algorithms'),
+	(10, 'Storage')
 GO
