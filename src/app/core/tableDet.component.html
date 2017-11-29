@@ -2,7 +2,7 @@
   <div style="font-size: 36px" class="badge-info">{{model?.Name}}</div>
   <div class="badge badge-info">Category: {{model?.Category1?.Name}}</div>
   <div class="badge badge-info">Path: {{model?.Path}}</div>
-  <div class="badge badge-info">Line of code: {{model?.LoC}}</div>
+  <div class="badge badge-info">Lines of code: {{model?.LoC}}</div>
   <div >
     <div class="badge badge-info">Count: {{DllDependencies.length}}</div>
   </div>
@@ -14,7 +14,7 @@
     <th>Name</th>
     <th>Category</th>
     <th>Path</th>
-    <th>Line of code</th>
+    <th>Lines of code</th>
   </tr>
   <tr *ngFor="let item of DllDependencies">
     <td style="vertical-align:middle">{{item.SCIADLL?.ID}}</td>
