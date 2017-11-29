@@ -39,5 +39,13 @@ struct linked_id_with_flag
 };
 
 using vecLinkswF = vector<linked_id_with_flag>;
-using mapTargetToLinkswF = map<short, vecLinkswF>;
+using setLinks = vector<short>;
 
+struct info_dll
+{
+	short id;
+	vecLinkswF dep;
+	unique_ptr<setLinks> all;
+};
+
+using mapTargetToLinkswF = map<short, info_dll>;

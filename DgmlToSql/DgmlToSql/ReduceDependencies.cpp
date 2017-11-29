@@ -14,10 +14,10 @@ void CReduceDependencies::ModifyDependenciesWithFlags(vector<link>& links)
 	{
 		short targetId = one.first;
 		cout << targetId << " - start\r\n";
-		auto& vecLinkswFlags = one.second;
-		for (auto& oneLinkwFlag : vecLinkswFlags)
+		auto& dllinfo = one.second;
+		for (auto& oneLinkwFlag : dllinfo.dep)
 		{
-			if (IsLinkedId(oneLinkwFlag.linked_id, FilterDepFlags(oneLinkwFlag.linked_id, vecLinkswFlags), mapTargets))
+			if (IsLinkedId(oneLinkwFlag.linked_id, FilterDepFlags(oneLinkwFlag.linked_id, dllinfo.dep), mapTargets))
 			{
 				oneLinkwFlag.transient = true;
 				auto itf = find_if(links.begin(), links.end(), [=](link& ln) { return ln.target == targetId && ln.source == oneLinkwFlag.linked_id; });
@@ -30,18 +30,19 @@ void CReduceDependencies::ModifyDependenciesWithFlags(vector<link>& links)
 	}
 }
 
-vecLinkswF CReduceDependencies::GetDependenciesForTarget(short target, const vector<link>& links)
+info_dll CReduceDependencies::GetDependenciesForTarget(short target, const vector<link>& links)
 {
-	vecLinkswF flags;
-	flags.reserve(200U);
+	info_dll flags;
+	flags.id = target;
+	flags.dep.reserve(200U);
 	for (const auto& one : links)
 	{
 		if (one.target == target)
 		{
-			flags.push_back(linked_id_with_flag{ one.source, false });
+			flags.dep.push_back(linked_id_with_flag{ one.source, false });
 		}
 	}
-	flags.shrink_to_fit();
+	flags.dep.shrink_to_fit();
 	return flags;
 }
 
@@ -53,7 +54,7 @@ mapTargetToLinkswF CReduceDependencies::GetMapTargetToLinks(const vector<link>& 
 		if (mapTargets.find(one.target) == mapTargets.cend())
 		{
 			mapTargets[one.target] = GetDependenciesForTarget(one.target, links);
-			cout << one.target << "; dep = " << mapTargets[one.target].size() << "\r\n";
+			cout << one.target << "; dep = " << mapTargets[one.target].dep.size() << "\r\n";
 		}
 	}
 	return mapTargets;
@@ -79,7 +80,7 @@ bool CReduceDependencies::IsLinkedId(short id, const vecLinkswF& dependLinksActu
 		auto itf2 = mapTargets.find(oneLink.linked_id);
 		if (itf2 != mapTargets.cend())
 		{
-			if (IsLinkedId(id, itf2->second, mapTargets))
+			if (IsLinkedId(id, itf2->second.dep, mapTargets))
 			{
 				return true;
 			}

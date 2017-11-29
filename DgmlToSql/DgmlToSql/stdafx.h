@@ -18,5 +18,6 @@
 #include <fstream>
 #include <algorithm>
 #include <map>
+#include <memory>
 
 using namespace std;

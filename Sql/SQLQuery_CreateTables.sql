@@ -53,6 +53,7 @@ CREATE TABLE dbo.DllDependency
 	ID int NOT NULL,
 	dllSourceID int NOT NULL,
 	dllTargetID int NOT NULL,
+	isTransient int NOT NULL,
 	CONSTRAINT PK_DllDependency PRIMARY KEY NONCLUSTERED (ID),
 	CONSTRAINT FK_dllSourceID FOREIGN KEY (dllSourceID)
 	    REFERENCES dbo.SCIADLL (ID)
