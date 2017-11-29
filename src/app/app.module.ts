@@ -8,6 +8,7 @@ import { RouterModule } from "@angular/router";
 import { TableComponent } from './core/table.component';
 import { GrafComponent } from './core/graf.component';
 import { TableDetComponent } from './core/tableDet.component';
+import { DataGridComponent } from './core/dataGrid.component';
 import { AppComponent } from './app.component';
 
 @NgModule({

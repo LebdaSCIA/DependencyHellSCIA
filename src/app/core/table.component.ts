@@ -6,12 +6,21 @@ import { Observer } from "rxjs/Observer";
 import { Router } from "@angular/router";
 import { AppSetting } from "./app.setting.service";
 import { Observable } from "rxjs/Observable";
+import { fadeInContent } from "@angular/material";
+
+export class SortInfo
+{
+    sorted = false;
+    ascending = true;
+}
 
 @Component({
     moduleId: module.id,
     templateUrl: "table.component.html"
 })
 export class TableComponent {
+    sortInfoLoc = new SortInfo();
+    sortInfoName = new SortInfo();
     SciaDlls = new Array<SciaDll>();
     SciaDllsAll = new Array<SciaDll>();
     constructor(
@@ -38,6 +47,60 @@ export class TableComponent {
             }
         });
 
+    }
+
+    sortLoC() {
+        this.sortInfoLoc.sorted = true;
+        let backUp = this.sortInfoLoc.ascending;
+        if(backUp)
+        {
+            this.SciaDlls.sort((a, b) => b.LoC - a.LoC);
+        }
+        else
+        {
+            this.SciaDlls.sort((a, b) => a.LoC - b.LoC);
+        }
+        this.sortInfoLoc.ascending = !this.sortInfoLoc.ascending;
+    }
+
+    sortName() {
+        this.sortInfoName.sorted = true;
+        let backUp = this.sortInfoName.ascending;
+        if(backUp)
+        {
+            this.SciaDlls.sort((a, b) => 
+            {
+                var nameA = a.Name.toUpperCase(); // ignore upper and lowercase
+                var nameB = b.Name.toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {
+                  return -1;
+                }
+                if (nameA > nameB) {
+                  return 1;
+                }
+              
+                // names must be equal
+                return 0;
+            });
+        }
+        else    
+        {
+            this.SciaDlls.sort((a, b) => 
+            {
+                var nameA = a.Name.toUpperCase(); // ignore upper and lowercase
+                var nameB = b.Name.toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {
+                  return 1;
+                }
+                if (nameA > nameB) {
+                  return -1;
+                }
+              
+                // names must be equal
+                return 0;
+            });
+        }
+        this.sortInfoLoc.ascending = !this.sortInfoLoc.ascending;
     }
 
     // getSciaDll(key: number): SciaDll {
