@@ -5,6 +5,7 @@ import { ModelRepository } from "../model/repository.model";
 import { Observable } from "rxjs/Observable";
 import { Nvd3Nodes } from "./nvd3Nodes.model";
 import { Nvd3Links } from "./nvd3Nodes.model";
+import { AppSetting } from "./app.setting.service";
 
 declare let d3: any;
 
@@ -28,7 +29,7 @@ let labels: boolean = true;
   template: `
     <button class="btn btn-danger btn-sm" (click)="changeSize()">Switch Labels</button>  
     <div>
-      <nvd3 [options]="options" [data]="data"></nvd3>
+      <nvd3 [options]="options" [data]="this.graphData"></nvd3>
     </div>
   `,
   // include original styles
@@ -40,13 +41,75 @@ let labels: boolean = true;
 
 export class GrafComponent implements OnInit {
   options;
-  data;
+  graphData = {
+    "nodes": [],
+    "links": []
+  };
 
+  SciaDllsAll = new Array<SciaDll>();
 
   constructor(
+    private appSetting: AppSetting,
     @Inject(SHARED_STATE) private stateEvents: Observable<SharedState>,
     private repository: ModelRepository, ) {
     // repository.getSciaDllsPromise((data) => this.data.nodes = new Nvd3Nodes(data).nodes);
+    this.repository.getSciaDllsPromise((data) => {
+      this.SciaDllsAll = data;
+    })
+
+    stateEvents.subscribe((update) => { 
+      // let data = this.SciaDllsAll;
+
+      //   for (let item of appSetting.catset) {
+      //     if (!item.on) {
+      //       data = data.filter(dll => dll.Category1.Name != item.name);
+      //     }
+      //   }
+
+      //   var dllArray: { [key: number]: number; } = {};
+      //   // this.graphData = {
+      //   //   "nodes": new Nvd3Nodes(data, dllArray).nodes,
+      //   //   "links": [ ]
+      //   // };
+
+      //   var temp = new Nvd3Nodes(data, dllArray).nodes;
+  
+      //   this.repository.getSciaDllDepsPromise((data) => {
+      //     this.graphData = {
+      //       "nodes": temp,
+      //       "links": new Nvd3Links(data.filter(q => !q.isTransient), dllArray).links,
+      //     }
+      //     // this.graphData.links = new Nvd3Links(data.filter(q => !q.isTransient), dllArray).links;
+      //   });
+
+      this.repository.getSciaDllsPromise((data) => {
+        var dllArray: Map<number, number> = new Map<number, number>();
+        // this.graphData = {
+        //   "nodes": new Nvd3Nodes(data, dllArray).nodes,
+        //   "links": [
+        //     // { "source": 0, "target": 2, "value": 10 },
+        //     // { "source": 1, "target": 2, "value": 10 }
+        //   ]
+        // };
+
+        for (let item of appSetting.catset) {
+              if (!item.on) {
+                data = data.filter(dll => dll.Category1.Name != item.name);
+              }
+            }
+  
+        var temp = new Nvd3Nodes(data, dllArray).nodes;
+  
+        this.repository.getSciaDllDepsPromise((data) => {
+          this.graphData = {
+            "nodes": temp,
+            "links": new Nvd3Links(data.filter(q => !q.isTransient), dllArray).links,
+          }
+        });
+  
+        //  this.data.nodes = new Nvd3Nodes(data, dllArray).nodes;
+      });
+    });
   }
 
   getSciaDlls(): SciaDll[] {
@@ -116,21 +179,23 @@ export class GrafComponent implements OnInit {
     */
 
     this.repository.getSciaDllsPromise((data) => {
-      var dllArray: { [key:number]:number; }  = {};
-      this.data = {
-        "nodes": new Nvd3Nodes(data, dllArray).nodes,
-        "links": [
-          // { "source": 0, "target": 2, "value": 10 },
-          // { "source": 1, "target": 2, "value": 10 }
-        ]
-      };
+      var dllArray: Map<number, number> = new Map<number, number>();
+      // this.graphData = {
+      //   "nodes": new Nvd3Nodes(data, dllArray).nodes,
+      //   "links": [
+      //     // { "source": 0, "target": 2, "value": 10 },
+      //     // { "source": 1, "target": 2, "value": 10 }
+      //   ]
+      // };
+
+      var temp = new Nvd3Nodes(data, dllArray).nodes;
 
       this.repository.getSciaDllDepsPromise((data) => {
-        this.data = {
-          "nodes": this.data.nodes,
+        this.graphData = {
+          "nodes": temp,
           "links": new Nvd3Links(data.filter(q => !q.isTransient), dllArray).links,
         }
-      });     
+      });
 
       //  this.data.nodes = new Nvd3Nodes(data, dllArray).nodes;
     });
