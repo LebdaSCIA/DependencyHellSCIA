@@ -19,14 +19,10 @@ import { AppComponent } from './app.component';
     ModelModule,
     CoreModule,
     RouterModule.forRoot([
-      { path: "table", component: TableComponent,
-      children: [ 
-        { path: "**", redirectTo: "/table" } 
-        ]
-      },
-      { path: "det/:id", component: TableDetComponent },
-      { path: "graf", component: GrafComponent },
-      { path: "**", redirectTo: "/table" }
+      { path: "dependencyhell/table", component: TableComponent},
+      { path: "dependencyhell/det/:id", component: TableDetComponent },
+      { path: "dependencyhell/graph", component: GrafComponent },
+      { path: "**", redirectTo: "dependencyhell/table" }
     ])],
   declarations: [
     AppComponent
