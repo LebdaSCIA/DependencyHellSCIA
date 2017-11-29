@@ -4,6 +4,7 @@ import { MODES, SharedState, SHARED_STATE } from "./sharedState.model";
 import { ModelRepository } from "../model/repository.model";
 import { Observable } from "rxjs/Observable";
 import { Nvd3Nodes } from "./nvd3Nodes.model";
+import { Nvd3Links } from "./nvd3Nodes.model";
 
 declare let d3: any;
 
@@ -88,14 +89,23 @@ export class GrafComponent implements OnInit {
     */
 
     this.repository.getSciaDllsPromise((data) => {
+      var dllArray: { [key:number]:number; }  = {};
       this.data = {
-        "nodes": new Nvd3Nodes(data).nodes,
+        "nodes": new Nvd3Nodes(data, dllArray).nodes,
         "links": [
-          { "source": 0, "target": 2, "value": 10 },
-          { "source": 1, "target": 2, "value": 10 }
+          // { "source": 0, "target": 2, "value": 10 },
+          // { "source": 1, "target": 2, "value": 10 }
         ]
       };
-      this.data.nodes = new Nvd3Nodes(data).nodes
+
+      this.repository.getSciaDllDepsPromise((data) => {
+        this.data = {
+          "nodes": this.data.nodes,
+          "links": new Nvd3Links(data, dllArray).links,
+        }
+      });     
+
+      //  this.data.nodes = new Nvd3Nodes(data, dllArray).nodes;
     });
   }
 

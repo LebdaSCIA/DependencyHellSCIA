@@ -23,6 +23,10 @@ export class ModelRepository {
       this.dataSource.getSciaDll(id).subscribe(data => callBack(data));
     }
 
+    getSciaDllDepsPromise(callBack: (dll: DllDependency[]) => void): void {
+        this.dataSource.getSciaDllDeps().subscribe(data => callBack(data));
+      }
+
     getSciaDllDepsForSrPromise(id: number, callBack: (dll: DllDependency[]) => void): void {
       this.dataSource.getSciaDllDepsForSrc(id).subscribe(data => callBack(data));
     }
