@@ -10,7 +10,9 @@ enum class eCategory
 	eGUI,
 	eUT,
 	eCommands,
-	eNexis
+	eNexis,
+	eAlgorithms,
+	eStorage
 };
 
 struct project
