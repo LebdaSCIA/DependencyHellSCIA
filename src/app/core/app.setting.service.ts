@@ -6,7 +6,8 @@ export class CategorySet {
     callBack4OnSet = new Array<() => void>();
     constructor(
         public name: string,
-        public cat: DllCategory) {
+        public cat: DllCategory,
+        public catStyle: any) {
     }
 
     get on(): boolean {
@@ -25,19 +26,18 @@ export class CategorySet {
 export class AppSetting {
     catset = new Array<CategorySet>();
     constructor() {
-        this.catset.push(new CategorySet("Kernel", DllCategory.Kernel));
-        this.catset.push(new CategorySet("Storage", DllCategory.Storage));
-        this.catset.push(new CategorySet("DataModel", DllCategory.DataModel));
-        this.catset.push(new CategorySet("Algorithms", DllCategory.Algorithms));
-        this.catset.push(new CategorySet("Checks", DllCategory.Checks));
-        this.catset.push(new CategorySet("Commands", DllCategory.Commands));
-        this.catset.push(new CategorySet("GUI", DllCategory.GUI));
-        this.catset.push(new CategorySet("UT", DllCategory.UT));
-        this.catset.push(new CategorySet("Nexis", DllCategory.Nexis));
-        this.catset.push(new CategorySet("unknown", DllCategory.unknown));
+        this.catset.push(new CategorySet("Kernel", DllCategory.Kernel, {color: "yellow"}));
+        this.catset.push(new CategorySet("Storage", DllCategory.Storage, {color:'LightBlue'}));
+        this.catset.push(new CategorySet("Data model", DllCategory.DataModel, {color:'blue'}));
+        this.catset.push(new CategorySet("Algorithms", DllCategory.Algorithms, {color:'red'}));
+        this.catset.push(new CategorySet("Checks", DllCategory.Checks, {color:'red'}));
+        this.catset.push(new CategorySet("Commands", DllCategory.Commands, {color:'OrangeRed'}));
+        this.catset.push(new CategorySet("GUI", DllCategory.GUI, {color:'green'}));
+        this.catset.push(new CategorySet("UT", DllCategory.UT, {color:'gray'}));
+        this.catset.push(new CategorySet("Nexis", DllCategory.Nexis, {color:'violet'}));
+        this.catset.push(new CategorySet("unknown", DllCategory.unknown, {color:'black'}));
     }
-    addCallBack4OnSet(callback : () => void)
-    {
+    addCallBack4OnSet(callback: () => void) {
         for (let item of this.catset) {
             item.callBack4OnSet.push(callback);
         }

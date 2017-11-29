@@ -19,8 +19,12 @@ import { AppComponent } from './app.component';
     ModelModule,
     CoreModule,
     RouterModule.forRoot([
+      { path: "dependencyhell", component: TableComponent},
+      { path: "table", component: TableComponent},
       { path: "dependencyhell/table", component: TableComponent},
+      { path: "det/:id", component: TableDetComponent },
       { path: "dependencyhell/det/:id", component: TableDetComponent },
+      { path: "graph", component: GrafComponent },
       { path: "dependencyhell/graph", component: GrafComponent },
       { path: "**", redirectTo: "dependencyhell/table" }
     ])],
