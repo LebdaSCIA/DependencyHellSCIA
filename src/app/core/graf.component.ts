@@ -8,6 +8,19 @@ import { Nvd3Links } from "./nvd3Nodes.model";
 
 declare let d3: any;
 
+let colors = [
+  "yellow", // kernel
+  "blue", // DataModel
+  "LightBlue", // Storage
+  "red", // checks
+  "green", // GUI
+  "gray", // UT
+  "black", // unknown
+  "OrangeRed", // Commands
+  "violet", // Nexis
+  "red", // Algorithms
+];
+
 @Component({
   template: `
     <div>
@@ -45,7 +58,7 @@ export class GrafComponent implements OnInit {
         width: (function () { return nv.utils.windowSize().width })(),
         margin: { top: 20, right: 20, bottom: 20, left: 20 },
         color: function (d) {
-          return d3.scale.category20(10/*d.group*/)
+          return colors[d.group];
         },
         nodeExtras: function (node) {
           node && node
@@ -53,6 +66,7 @@ export class GrafComponent implements OnInit {
             .attr("dx", 8)
             .attr("dy", ".35em")
             .text(function (d) { return d.name })
+            .attr('fill', function(d) { return colors[d.group] })
             .style('font-size', '20px');
         }
       }
